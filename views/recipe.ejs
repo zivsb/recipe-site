@@ -1,0 +1,20 @@
+<%-include('imports')-%>
+<%- include('nav') %>
+<h1><%=name%></h1>
+<h3>By: <%=creator%> </h3>
+<br><br><br>
+<h2>Ingredients</h2>
+<ul>
+    <% for (ingredient of ingredients) {%>
+        <li>
+            <%=ingredient.name %>: 
+            <%=ingredient.amount %>
+            <%if (ingredient.unit) { %> <%=ingredient.unit%> <%}%>
+        </li>
+    <% } %>
+</ul>
+
+<h2>Instructions</h2>
+<p>
+    <%= instructions %>
+</p>

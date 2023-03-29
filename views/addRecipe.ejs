@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add Recipe Form</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<%- include('imports') -%>
+</head>
+<body>
+    <%- include('nav') %>
+	<h1>Add Recipe</h1>
+	<form id="add-recipe-form">
+		<label for="recipe-name">Recipe Name:</label>
+		<input type="text" id="recipe-name" name="recipe-name" placeholder="Enter recipe name" required>
+		<br><br>
+		<label for="creator">Creator:</label>
+		<input type="text" id="creator" name="creator" placeholder="Enter creator name">
+		<br><br>
+		<div id="ingredients-container">
+			<div class="ingredient">
+				<label for="ingredient-name-1">Ingredient 1:</label>
+				<input type="text" id="ingredient-name-1" name="ingredient-name-1" placeholder="Enter ingredient name" required>
+				<input type="number" id="ingredient-amount-1" name="ingredient-amount-1" placeholder="Amount" required>
+				<input type="text" id="ingredient-unit-1" name="ingredient-unit-1" placeholder="Unit of measurement">
+			</div>
+		</div>
+		<button type="button" id="add-ingredient-btn">Add Ingredient</button>
+		<br><br>
+		<label for="instructions">Instructions:</label>
+		<textarea id="instructions" name="instructions" rows="10" placeholder="Enter instructions" required></textarea>
+		<br><br>
+		<button type="submit">Submit</button>
+	</form>
+
+	<script>
+		const form = document.getElementById("add-recipe-form");
+		const ingredientsContainer = document.getElementById("ingredients-container");
+		const addIngredientBtn = document.getElementById("add-ingredient-btn");
+
+		let ingredientCount = 1;
+
+		addIngredientBtn.addEventListener("click", () => {
+			ingredientCount++;
+
+			const newIngredient = document.createElement("div");
+			newIngredient.classList.add("ingredient");
+
+			newIngredient.innerHTML = `
+				<label for="ingredient-name-${ingredientCount}">Ingredient ${ingredientCount}:</label>
+				<input type="text" id="ingredient-name-${ingredientCount}" name="ingredient-name-${ingredientCount}" placeholder="Enter ingredient name" required>
+				<input type="number" id="ingredient-amount-${ingredientCount}" name="ingredient-amount-${ingredientCount}" placeholder="Amount" required>
+				<input type="text" id="ingredient-unit-${ingredientCount}" name="ingredient-unit-${ingredientCount}" placeholder="Unit of measurement">
+			`;
+
+			ingredientsContainer.appendChild(newIngredient);
+		});
+
+		form.addEventListener("submit", (event) => {
+			event.preventDefault();
+
+			const recipeName = document.getElementById("recipe-name").value;
+			const creator = document.getElementById("creator").value;
+			const instructions = document.getElementById("instructions").value;
+
+			const ingredients = [];
+
+			for (let i = 1; i <= ingredientCount; i++) {
+				const ingredientName = document.getElementById(`ingredient-name-${i}`).value;
+				const ingredientAmount = document.getElementById(`ingredient-amount-${i}`).value;
+				const ingredientUnit = document.getElementById(`ingredient-unit-${i}`).value;
+
+				if (ingredientName && ingredientAmount) {
+					ingredients.push({
+						name: ingredientName,
+						amount: ingredientAmount,
+						unit: ingredientUnit				});
+			}
+		}
+
+		const data = {
+			"recipeName": recipeName,
+			"creator": creator,
+			"ingredients": ingredients,
+			"instructions": instructions
+		};
+
+		fetch("/add-recipe", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			alert("Recipe added successfully!");
+			form.reset();
+		})
+		.catch(error => {
+			console.error("Error adding recipe:", error);
+			alert("There was an error adding the recipe. Please try again later.");
+		});
+	});
+</script>
+</body>
+</html>
