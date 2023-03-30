@@ -1,12 +1,16 @@
 <%- include('imports') -%>
 <%- include('nav') %>
-<h1>Welcome to the homepage</h1>
-<ul>
-    <% for (post of showPosts.reverse()) { %>
-        <li>
-                
-                <%- include('postPreviews/home.ejs', { i, name, creator } = post) -%>
-        </li>
-    <%}%>
-    
-</ul>
+<link rel="stylesheet" href="/home.css">
+<body>
+    <h1>Welcome to the homepage</h1>
+    <h2>Browse the most recent dishes</h1>
+    <ul>
+        <% for (post of showPosts.reverse()) { %>
+            <li>
+                    
+                    <%- include('postPreviews/home.ejs', { i, name, creator } = post) -%>
+            </li>
+        <%}%>
+        
+    </ul>
+</body>
